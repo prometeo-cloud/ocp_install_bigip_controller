@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: gatblau
+  description: installs the big ip controller on OCP
+  license: Apache 2
+  min_ansible_version: 2.6
+...
