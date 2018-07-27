@@ -22,6 +22,17 @@
 - name: Binding the bigip-ctrl Cluster Role with the service account
   command: "oc create -f cluster_role_binding.yml -n kube-system --token {{ ocp_token }}"
 
+- name: Preparing the deployment file
+  template:
+    src: "deployment.yml"
+    dest: "/tmp/deployment.yml"
+    delegate_to: localhost
+
 - name: Creating the bigip-ctrl Deployment
-  command: "oc create -f deployment.yml -n kube-system --token {{ ocp_token }}"
+  command: "oc create -f /tmp/deployment.yml -n kube-system --token {{ ocp_token }}"
+
+- name: Removing the deployment file
+  file:
+    path: "/tmp/deployment.yml"
+    state: absent
 ...

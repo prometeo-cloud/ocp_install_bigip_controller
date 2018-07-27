@@ -17,10 +17,25 @@ Create a file site.yml as follows:
 
 ```yaml
 - hosts: localhost
-  roles:
-    - ocp_install_bigip_controller
+  tasks: 
+    - name: "install bigip controller"
+      include_role: 
+        name: ocp_install_bigip_controller
+        tasks_from: main
+      vars:
+        bigip_username: xxx
+        bigip_password: xxx
+        bigip-url: xxx.xxx.xxx.xxx
+        bigip-partition: xxxx
+        route-vserver-addr: xxxx
+        log-level: DEBUG or INFO
+        openshift-sdn-name: xxxxx
+        default-server-ssl: xxxxx
+        route-label: xxxxx
 ```
      
+For more information on what these variables are for look [here](https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest).
+
 Deploy this role in a roles folder under site.yml.
 
 Execute as follows:

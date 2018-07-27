@@ -36,10 +36,17 @@ spec:
             # https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest
             "--bigip-username=$(BIGIP_USERNAME)",
             "--bigip-password=$(BIGIP_PASSWORD)",
-            "--bigip-url=<ip_address-or-hostname>",
-            "--bigip-partition=<name_of_partition>",
+            "--bigip-url={{ bigip-url }}",
+            "--bigip-partition={{ bigip-partition }}",
             "--pool-member-type=cluster",
-            "--openshift-sdn-name=/Common/<tunnel>",
+            "--manage-routes=true",
+            "--route-vserver-addr={{ route-vserver-addr }}",
+            "--log-level={{ log-level }}",
+            "--openshift-sdn-name={{ openshift-sdn-name }}",
+            "--route-http-vserver=VIP_OCP_DEV_HTTP",
+            "--route-https-vserver=VIP_OCP_DEV_HTTPS",
+            "--default-server-ssl={{ default-server-ssl }}",
+            "--route-label={{ route-label }}",
             ]
       imagePullSecrets:
         # Secret that gives access to a private Docker registry
