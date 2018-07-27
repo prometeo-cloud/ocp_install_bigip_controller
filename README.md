@@ -25,13 +25,13 @@ Create a file site.yml as follows:
       vars:
         bigip_username: xxx
         bigip_password: xxx
-        bigip-url: xxx.xxx.xxx.xxx
-        bigip-partition: xxxx
-        route-vserver-addr: xxxx
-        log-level: DEBUG or INFO
-        openshift-sdn-name: xxxxx
-        default-server-ssl: xxxxx
-        route-label: xxxxx
+        bigip_url: xxx.xxx.xxx.xxx
+        bigip_partition: xxxx
+        route_vserver_addr: xxxx
+        log_level: DEBUG or INFO
+        openshift_sdn_name: xxxxx
+        default_server_ssl: xxxxx
+        route_label: xxxxx
 ```
      
 For more information on what these variables are for look [here](https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest).

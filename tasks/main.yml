@@ -3,7 +3,9 @@
   template:
     src: "bigip_secret.yml"
     dest: "/tmp/bigip_secret.yml"
-    delegate_to: localhost
+  delegate_to: localhost
+
+-﻿command: "oc delete secret bigip-login -n kube-system --token {{ ocp_token }}"
 
 - name: Creating Big IP secret
   command: "oc create -f /tmp/bigip_secret.yml --token {{ ocp_token }}"
@@ -13,20 +15,30 @@
     path: "/tmp/bigip_secret.yml"
     state: absent
 
+- command: "oc delete serviceaccount bigip-ctlr -n kube-system --token {{ ocp_token }}"
+  ignore_errors: yes
+
 - name: Creating a service account for bigip controller
   command: "oc create serviceaccount bigip-ctlr -n kube-system --token {{ ocp_token }}"
 
 - name: Creating the bigip-ctrl Cluster Role
   command: "oc create -f cluster_role.yml -n kube-system --token {{ ocp_token }}"
+  args:
+    chdir: "{{ role_path }}/files"
+
+- command: "oc delete clusterrole system:bigip-ctrl -n kube-system --token {{ ocp_token }}"
+  ignore_errors: yes
 
 - name: Binding the bigip-ctrl Cluster Role with the service account
   command: "oc create -f cluster_role_binding.yml -n kube-system --token {{ ocp_token }}"
+  args:
+      chdir: "{{ role_path }}/files"
 
 - name: Preparing the deployment file
   template:
     src: "deployment.yml"
     dest: "/tmp/deployment.yml"
-    delegate_to: localhost
+  delegate_to: localhost
 
 - name: Creating the bigip-ctrl Deployment
   command: "oc create -f /tmp/deployment.yml -n kube-system --token {{ ocp_token }}"
