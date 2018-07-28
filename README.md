@@ -1,15 +1,8 @@
 # ocp_install_bigip_controller
 
-Installs the bigip controller on OCP.
+Installs the F5 BIG-IP Controller pod on OCP.
 
-## Configuration
-
-| Name | Description | Default |
-|---|---|---|
-| ocp_token | A service a count token with cluster-admin role. | |
-| bigip_partition_route_domain | The default Route Domain to assign to the Partition. | 0 |
-| bigip_username | The username used to login to Big IP. |
-| bigip_password | The password used to login to Big IP. |
+The F5 BIG-IP Controller manages the F5 BIG-IP device from OpenShift using environment’s native CLI/API.
 
 ### Example of use
 
@@ -21,29 +14,42 @@ Create a file site.yml as follows:
     - name: "install bigip controller"
       include_role: 
         name: ocp_install_bigip_controller
-        tasks_from: main
       vars:
-        bigip_username: xxx
-        bigip_password: xxx
-        bigip_url: xxx.xxx.xxx.xxx
-        bigip_partition: xxxx
-        route_vserver_addr: xxxx
-        log_level: DEBUG or INFO
-        openshift_sdn_name: xxxxx
-        default_server_ssl: xxxxx
-        route_label: xxxxx
+        ocp_token: "<<service_account_token>>"
+        bigip_username: "username_here"
+        bigip_password: "password_here"
+        bigip_url: "bigip_admin_ip"
+        bigip_partition: "partition_name"
+        route_vserver_addr: "virtual_server_bind_address"
+        log_level: "INFO"
+        openshift_sdn_name: "vxlan_tunnel_name"
+        default_server_ssl: "server_ssl_name"
+        route_label: "ocp_route_filter_label"
 ```
-     
-For more information on what these variables are for look [here](https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest).
-
-Deploy this role in a roles folder under site.yml.
+Deploy this role in a roles folder where the above site.yml file is.
 
 Execute as follows:
 
 ```bash
 $ ansible-playbook site.yml
 ```  
- 
+### Configuration variables
+
+| name | description | required | example |
+|---|---|---|---|
+| ocp_token | A service account token with admin rights on the kube-system namespace. | yes | see below secrion how to create a token...
+| bigip_username| BIG-IP iControl REST username. | yes | |
+| bigip_password | BIG-IP iControl REST password. | yes | |
+| bigip_url | BIG-IP admin IP address. | yes | |
+| bigip_partition | The BIG-IP partition in which to configure objects. | yes |
+| route_vserver_addr | Bind address for virtual server for OpenShift Route objects. | no |
+| log_level | Log level. Defaults to INFO. Possible values are INFO, DEBUG, CRITICAL, WARNING, ERROR. | no | DEBUG |
+| openshift_sdn_name | Name of the VXLAN tunnel on the BIG-IP system that corresponds to an Openshift SDN HostSubnet. | no | |
+| default_server_ssl | Specify the name of a user created server ssl profile that will be attached to the route https vserver and used as default for SNI. This profile must have the Default for SNI field enabled. | no |
+| route_label | Tells the k8s-bigip-ctlr to only watch for OpenShift Route objects with the f5type label set to this value. | no | |
+          
+For more information on these variables see [here](https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest).
+
 <a name="ocp-token"></a>
 ### How to create a token for a service account
 
